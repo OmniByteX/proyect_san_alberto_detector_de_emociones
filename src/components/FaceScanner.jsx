@@ -80,7 +80,7 @@ export default function FaceScanner({ stopScan }) {
       return;
     }
 
-    // Encontrar max y min emociones (excepto neutral para min si quieres)
+    
     const entries = Object.entries(emotions);
     let max = entries[0];
     let min = entries[0];

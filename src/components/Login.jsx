@@ -18,7 +18,7 @@ export default function Login({ onLogin }) {
   return (
     <div className="login-container">
       <img src={logo} alt="Logo Colegio" className="logo-large" />
-      <h1 className="title">Bienvenido a Emocare</h1>
+      <h1 className="title">Bienvenido</h1>
       <form onSubmit={handleSubmit} className="login-form">
         <input
           type="text"

@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function FloatingPanel({ emotionData }) {
-  // Mostrar emoción predominante general (la más alta entre todas las personas)
+  
   let topEmotion = { name: 'N/A', score: 0 };
 
   Object.values(emotionData).forEach((expr) => {
