@@ -108,14 +108,15 @@ export default function FaceScanner({ stopScan }) {
       if (entry[1] < min[1]) min = entry;
     }
 
-    // Filtrar las otras emociones que no sean max ni min
+    // Filtrar otras emociones (excluyendo max y min) y con valor significativo (>1%)
     const others = entries
       .filter(([emotion]) => emotion !== max[0] && emotion !== min[0])
-      .map(([emotion, value]) => ({ name: emotion, value: (value * 100).toFixed(1) }));
+      .filter(([, value]) => value > 0.01)
+      .map(([emotion, value]) => ({ name: emotion, value: (value * 100).toFixed(2) }));
 
     setSummary({
-      max: { name: max[0], value: (max[1] * 100).toFixed(1) },
-      min: { name: min[0], value: (min[1] * 100).toFixed(1) },
+      max: { name: max[0], value: (max[1] * 100).toFixed(2) },
+      min: { name: min[0], value: (min[1] * 100).toFixed(2) },
       others,
     });
   };
@@ -153,10 +154,9 @@ export default function FaceScanner({ stopScan }) {
               <strong>Emoción más baja:</strong> {summary.min.name} ({summary.min.value}%)
             </p>
           )}
-
-          {summary.others && summary.others.length > 0 && (
+          {summary.others.length > 0 && (
             <>
-              <h4>Otras emociones detectadas:</h4>
+              <strong>Otras emociones detectadas:</strong>
               <ul>
                 {summary.others.map(({ name, value }) => (
                   <li key={name}>
@@ -166,7 +166,6 @@ export default function FaceScanner({ stopScan }) {
               </ul>
             </>
           )}
-
           {!summary.max && <p>No se detectaron emociones.</p>}
         </div>
       )}
