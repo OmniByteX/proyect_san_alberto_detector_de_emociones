@@ -4,15 +4,7 @@ import EmotionCard from "./EmotionCard";
 
 export default function FaceScanner({ stopScan }) {
   const videoRef = useRef(null);
-  const [emotions, setEmotions] = useState({
-    angry: 0,
-    disgusted: 0,
-    fearful: 0,
-    happy: 0,
-    neutral: 1,
-    sad: 0,
-    surprised: 0,
-  });
+  const [emotions, setEmotions] = useState(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [summary, setSummary] = useState(null);
   const [scanning, setScanning] = useState(true);
@@ -71,16 +63,8 @@ export default function FaceScanner({ stopScan }) {
         if (detection && detection.expressions) {
           setEmotions(detection.expressions);
         } else {
-          // Cuando no detecta cara, poner valores neutros
-          setEmotions({
-            angry: 0,
-            disgusted: 0,
-            fearful: 0,
-            happy: 0,
-            neutral: 1,
-            sad: 0,
-            surprised: 0,
-          });
+          // No detecta cara, no mostramos emociones
+          setEmotions(null);
         }
       }
     }, 400);
@@ -97,11 +81,22 @@ export default function FaceScanner({ stopScan }) {
       return;
     }
 
-    const entries = Object.entries(emotions);
-    let max = entries[0];
-    let min = entries[0];
+    // Filtrar neutral si hay otra emoción > 0.3
+    let filteredEntries = Object.entries(emotions).filter(([emotion, value]) => {
+      if (emotion === "neutral") {
+        return !Object.entries(emotions).some(([e, v]) => e !== "neutral" && v > 0.3);
+      }
+      return true;
+    });
 
-    for (const entry of entries) {
+    if (filteredEntries.length === 0) {
+      filteredEntries = Object.entries(emotions); // fallback en caso de no encontrar otras emociones
+    }
+
+    let max = filteredEntries[0];
+    let min = filteredEntries[0];
+
+    for (const entry of filteredEntries) {
       if (entry[1] > max[1]) max = entry;
       if (entry[1] < min[1]) min = entry;
     }
@@ -121,13 +116,26 @@ export default function FaceScanner({ stopScan }) {
         muted
         style={{ borderRadius: "12px", border: "3px solid #4A90E2", boxShadow: "0 0 15px #4A90E2" }}
       />
+
       {!modelsLoaded && <p>Cargando modelos...</p>}
 
       {scanning && (
         <div className="emotions-cards">
-          {Object.entries(emotions).map(([emotion, value]) => (
-            <EmotionCard key={emotion} emotion={emotion} value={value} />
-          ))}
+          {emotions ? (
+            Object.entries(emotions)
+              .filter(([emotion, value]) => {
+                // Ocultar neutral si hay otra emoción > 0.3
+                if (emotion === "neutral") {
+                  return !Object.entries(emotions).some(([e, v]) => e !== "neutral" && v > 0.3);
+                }
+                return true;
+              })
+              .map(([emotion, value]) => (
+                <EmotionCard key={emotion} emotion={emotion} value={value} />
+              ))
+          ) : (
+            <p>No se detecta cara</p>
+          )}
         </div>
       )}
 
