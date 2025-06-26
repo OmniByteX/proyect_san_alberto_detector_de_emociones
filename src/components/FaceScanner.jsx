@@ -108,7 +108,6 @@ export default function FaceScanner({ stopScan }) {
       if (entry[1] < min[1]) min = entry;
     }
 
-    // Filtrar otras emociones (excluyendo max y min) y con valor significativo (>1%)
     const others = entries
       .filter(([emotion]) => emotion !== max[0] && emotion !== min[0])
       .filter(([, value]) => value > 0.01)
@@ -132,7 +131,6 @@ export default function FaceScanner({ stopScan }) {
       />
       {!modelsLoaded && <p>Cargando modelos...</p>}
 
-      {/* Mostrar siempre la tabla de emociones mientras se escanea */}
       {scanning && (
         <div className="emotions-cards">
           {Object.entries(emotions).map(([emotion, value]) => (
