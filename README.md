@@ -10,7 +10,7 @@ Se trata de una aplicación web que detecta y analiza emociones faciales en tiem
 
 - React.js
 - Firebase (Autenticación y almacenamiento)
-- face-api.js (Detección y reconocimiento facial)
+- face.js (Detección y reconocimiento facial Fase Beta)
 - Vite (Herramienta de construcción y desarrollo)
 - Chart.js (Visualización de datos)
 - Node.js
