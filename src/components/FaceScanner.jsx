@@ -4,7 +4,15 @@ import EmotionCard from "./EmotionCard";
 
 export default function FaceScanner({ stopScan }) {
   const videoRef = useRef(null);
-  const [emotions, setEmotions] = useState(null);
+  const [emotions, setEmotions] = useState({
+    angry: 0,
+    disgusted: 0,
+    fearful: 0,
+    happy: 0,
+    neutral: 1,
+    sad: 0,
+    surprised: 0,
+  });
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [summary, setSummary] = useState(null);
   const [scanning, setScanning] = useState(true);
@@ -63,7 +71,16 @@ export default function FaceScanner({ stopScan }) {
         if (detection && detection.expressions) {
           setEmotions(detection.expressions);
         } else {
-          setEmotions(null);
+          // Cuando no detecta cara, poner valores neutros
+          setEmotions({
+            angry: 0,
+            disgusted: 0,
+            fearful: 0,
+            happy: 0,
+            neutral: 1,
+            sad: 0,
+            surprised: 0,
+          });
         }
       }
     }, 400);
@@ -80,7 +97,6 @@ export default function FaceScanner({ stopScan }) {
       return;
     }
 
-    
     const entries = Object.entries(emotions);
     let max = entries[0];
     let min = entries[0];
@@ -107,7 +123,7 @@ export default function FaceScanner({ stopScan }) {
       />
       {!modelsLoaded && <p>Cargando modelos...</p>}
 
-      {emotions && scanning && (
+      {scanning && (
         <div className="emotions-cards">
           {Object.entries(emotions).map(([emotion, value]) => (
             <EmotionCard key={emotion} emotion={emotion} value={value} />
@@ -137,13 +153,17 @@ export default function FaceScanner({ stopScan }) {
           Detener análisis
         </button>
       ) : (
-        <button className="btn-primary" onClick={() => {
-          setSummary(null);
-          startVideo();
-        }}>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            setSummary(null);
+            startVideo();
+          }}
+        >
           Reanudar análisis
         </button>
       )}
     </div>
   );
 }
+
