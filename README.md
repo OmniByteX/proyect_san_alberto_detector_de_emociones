@@ -35,8 +35,8 @@ Los datos de las detecciones y análisis emocionales se almacenan en una base de
 
 ## Autores
 
-- Renato León Ramos  
-- Ian Pasión Saenz  
+- Renato León Ramos.
+- Ian Pasión Saenz.
 
 ## Contacto
 
